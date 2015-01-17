@@ -1,0 +1,27 @@
+\section{Measurements}
+The measurements where done using a job loop such that a job with a MPI process grid of with all powers of two smaller or equal to the number of nodes on Tödi could be easily submitted at once.
+\subsection{Strong scaling}
+For the strong scaling the code was tested with a $n\times n$ matrix size of $n=10080, 20160, 40320$. In figure \ref{fig:scaling1} we see the speedup plots for the different setups. Note that for the CPU case there was an out of memory Killer for $n=40320$, so the time for 4 nodes was assumed to scale perfectly. The same was done for the GPU case in $n = 20160$ and for GPU and $n=40320$ the plot had to be rescaled to 9 nodes. The reason is that there is 32GB DDR3 memory on a node of Tödi but the graphic card has 6GB GDDR5 memory. $5\times \SI{8}{byte}\times 40320^2=\SI{65.028}{GB}$ is bigger than the DDR3 memory of a node and $5\times \SI{8}{byte}\times 20160^2=\SI{16.257}{GB}$ is bigger than the GDDR5 memory of the graphic card of one node etc.
+
+For the biggest matrix size, the CPU version scales very well but for the small one badly. The reason can be seen in the communication ratio. For 100 nodes waiting for the block to arrive takes almost \SI{70}{\percent} of the time! The GPU version scales worse. Especially for the small matrix size one can see that either sending the data to the GPU takes a lot of time or the GPU threads can not be used efficiently when there is not enough data.
+\subsection{Weak scaling}
+The number of elements of a matrix are $n^2$ and there are $c\cdot n^3, c=\text{constant},$ operations. Let $\et_p$ be a function 
+\begin{align*}
+	\et_p:\,\mathbb{N}&\to \mathbb{R}, \\
+	N &\mapsto \et_p(N),
+\end{align*}
+that maps the length of the matrix $n$ ($n^2$ being the number of elements of a quadratic matrix) to the execution time of the matrix-matrix multiplication, where $p$ is the number of nodes on which the matrix-matrix multiplication is done.  We assume perfect strong scaling
+\begin{align*}
+	\et_1(N)&=p\et_p(N).\\
+	\intertext{We want the number of operations on one node in a multi-node computation to be the same as on one node in a single-node computation. We want to know which factor $\gamma$ we need in order to have a constant number of operations}
+	\frac{\et_p(\gamma N)}{\et_1(N)}&=1,\\
+	\intertext{we use the ideal strong scaling to get}
+	\frac{\et_p(\gamma N)}{\et_1(N)}&=\frac{\et_1(\gamma N)}{p\et_1(N)},\\
+	\intertext{which leads to}
+	\frac{\et_1(\gamma N)}{p\et_1(N)}&=\frac{\gamma^3 N^3}{pN^3}=1,\\
+	\intertext{which gives us the factor we were looking for}
+	\gamma&=\sqrt[3]{p}.
+\end{align*}
+The base matrix size is the one in the single node computation. For multi-node computations the matrix length $N$ was multiplied by $\gamma$. To fulfill the matrix size preconditions the matrix length was adjusted to the nearest length that does fulfill the size preconditions.
+
+For the base matrix size 20160 the matrix blocks did not fit into one and four GPUs, so the scaling has been assumed to be the same as for the ``middle'' matrix size. One can see then that it scales slightly better.  The best scaling is achieved for the biggest matrices in the CPU case. The GPU case scales worse and also correlates in a similar way to the matrix size. For the smallest matrix there is a big oscillation. This could be due to the fact that there are more fluctuations in matrix sizes to fill the  nodes equally. But the upper boundary for the theoretical fluctuation of execution time for this reason is 0.6\% and the MPI communication ratio tells a different story as the peaks in the MPI communication ratio are mostly at the same place as the drops of speedup. The GPU speedup looks similar as the one of the strong scaling. This is due to the slightly weaker drop of matrix block size per node which changes continuously the absolute ratio of communication to computation.

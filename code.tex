@@ -1,0 +1,30 @@
+\chapter{Code}
+\section{PDGEMM}
+\lstinputlisting[caption=main.cpp,label={lst:main}]{main.cpp}
+\newpage
+\lstinputlisting[caption=Makefile, language=make,label=lst:makefile]{Makefile}
+\newpage
+\lstinputlisting[caption=matrix\_operations.hpp, label=lst:moperations]{matrix_operations.hpp}
+\newpage
+\lstinputlisting[caption=matrix\_classes.hpp, label=lst:mclasses]{matrix_classes.hpp}
+\newpage
+\lstinputlisting[caption=gemm.cu, label=lst:gemm,language=C]{gemm.cu}
+\newpage
+\lstinputlisting[caption=job-loop.sh, label=lst:job-loop,language=bash]{jobs/job-loop.sh}
+\newpage
+\lstinputlisting[caption=create-helper.sh, label=lst:create-helper,language=bash]{jobs/create-helper.sh}
+\newpage
+\lstinputlisting[caption=helper-cpu-16.sbh, label=lst:helper-expl]{jobs/helper-cpu-16.sbh}
+\lstinputlisting[caption=helper-gpu-16.sbh, label=lst:helper-expl]{jobs/helper-gpu-16.sbh}
+\newpage
+\section{3D Diffusion}
+\lstset{inputpath=../diffusion/src}
+\lstinputlisting[caption=main.cpp,label={lst:dmain}]{main.cpp}
+\newpage
+\lstinputlisting[caption=Makefile, language=make,label=lst:dmakefile]{Makefile}
+\newpage
+\lstinputlisting[caption=block.cpp,label={lst:block}]{block.cpp}
+\newpage
+\lstinputlisting[caption=block.hpp,label={lst:blockh}]{block.hpp}
+\newpage
+\lstinputlisting[caption=mpi\_helpers.hpp,label={lst:dmpi_helpers}]{mpi_helpers.hpp}

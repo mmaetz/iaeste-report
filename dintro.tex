@@ -1,0 +1,43 @@
+\chapter{3D Diffusion Equation}
+\section{Introduction}
+We want to do a simulation of following problem
+\begin{align*}
+	\pdv{\phi(\vtr{r},t)}{t}&=\nabla \cdot \left[ D(\phi,\vtr{r})\nabla \phi(\vtr{r},t) \right].
+	\intertext{For simplicity we chose $D=1$ which gives}
+	\pdv{\phi(\vtr{r},t)}{t}&=\Delta \phi(\vtr{r},t).
+	\intertext{Using the central difference scheme for space with step $h$ and the forward difference scheme for time with step $\Delta t$ we get}
+	\phi(\vtr{r},t+\Delta t) &= \frac{\Delta t}{h^2} \cdot \big[ \phi(x+h,y,z)+\phi(x-h,y,z)\\
+	&\hphantom{=\frac{\Delta t}{h^2} \cdot \big[} +\phi(x,y+h,z)+\phi(x,y-h,z)\\
+	&\hphantom{=\frac{\Delta t}{h^2} \cdot \big[}+\phi(x,y,z+h)+\phi(x,y,z-h)\\
+	&\hphantom{=\frac{\Delta t}{h^2} \cdot \big[}-6\phi(x,y,z) \big].
+\end{align*}
+The domains for space and time are $(0,1)^3\times [0,1]$ with periodic boundary conditions in space.
+For computing this on more than one node, the domain has to be splitted. This leads to the fact that to compute the stencil on the border of the node, one needs the cells that are one element away in a neighbor node. They have to be sent to the appropriate node to be available for computing the stencil and are called ghost cells on the node they are duplicated. Sending the ghost cells is the main challenge for computing this stencil on a distributed system.
+\section{Environment}
+For the 3D Diffusion Equation the Cray compiler was used and no additional modules.
+\section{Concept}
+A 3D MPI process grid is initialized to split the cells equally so each node gets one block. The computation is separated in the inner loop that does not require ghost cells and the border loop that requires them. The block size is \texttt{SideLength\_} in the code which we denote $s$ in the report, the number of elements in a block are $s^3$. The Cells\_ vector is one dimensional but describes the cells in three dimensions. They are mapped like this
+\begin{gather*}
+	\text{index}=x+s\cdot y+s^2\cdot z.
+\end{gather*}
+The indices for the borders have been chosen in the following way:
+\begin{align*}
+	\text{Bottom: }& 0,1,\,\ldots,\,s^2-1\\
+	\text{Top: }&s^3-s^2,\,s^3-s^2+1,\,\ldots,\,s^3-1\\
+	\text{Left: }&0,\,s,\,\ldots,\,s^3-s\\
+	\text{Right: }&s-1,\,2s-1,\,\ldots,\,s^3-1\\
+	\text{Front: }&0,\,1,\,\ldots,\,s-1,\\
+	&s^2,\,s^2+1,\,\cdots,\,s^2+s-1,\\
+	&\ldots,\,\ldots,\,\ldots,\\
+	&s^2(s-1),s^2(s^1-1)+1,\ldots,s^3-s^2+s-1.\\
+	\text{Back: }&s^2-s,\,s^2-s+1,\,\ldots,\,s^2-1,\\
+	&2s^2-s,\,2s^2-s+1,\,\ldots,2s^2-1,\\
+	&\ldots,\,\ldots,\,\ldots,\\
+	&s^3-s,\,s^3-s+1,\,\ldots,\,s^3-1.
+\end{align*}
+For top, bottom, left, right MPI data types can be defined as the stride is uniform. For the front and back the values have been copied to a vector and then sent. 
+
+The parallelization strategy is to first communicate asynchronously the border of the neighbors and to store them into ghost cells. Before the MPI barrier the inner loop is done. Then we start again.
+
+\section{Implementation}
+\texttt{block.hpp}  is included in \texttt{block.cpp} which is linked to the \texttt{main.cpp}. For getting the values of the border cells, functions have been defined for the ease of use. Because a function call for every element is expensive the return values are inlined. 

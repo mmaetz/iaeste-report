@@ -1,0 +1,60 @@
+\chapter{Scaling Plots}
+\section{PDGEMM}
+\begin{figure}[]
+	\begin{center}
+		\input{../pdgemm/strong_scaling.tex}
+	\end{center}
+	\caption{Speedup in strong scaling from 1 to 100 nodes for PDGEMM.}
+	\label{fig:scaling1}
+\end{figure}
+\begin{figure}[]
+	\begin{center}
+		\input{../pdgemm/strong_scaling_comm.tex}
+	\end{center}
+	\caption{MPI communication ratio in strong scaling from 1 to 100 nodes for PDGEMM.}
+	\label{fig:scaling2}
+\end{figure}
+\begin{figure}[]
+	\begin{center}
+		\input{../pdgemm/strong_scaling_cpugpu.tex}
+	\end{center}
+	\caption{GPU speedup compared to CPU in strong scaling from 1 to 100 nodes for PDGEMM.}
+	\label{fig:scaling3}
+\end{figure}
+\begin{figure}[]
+	\begin{center}
+		\input{../pdgemm/weak_scaling.tex}
+	\end{center}
+	\caption{Speedup in weak scaling from 1 to 256 nodes for PDGEMM.}
+	\label{fig:scaling4}
+\end{figure}
+\begin{figure}[]
+	\begin{center}
+		\input{../pdgemm/weak_scaling_comm.tex}
+	\end{center}
+	\caption{MPI communication ratio in weak scaling from 1 to 256 nodes for PDGEMM.}
+	\label{fig:scaling5}
+\end{figure}
+\begin{figure}[]
+	\begin{center}
+		\input{../pdgemm/weak_scaling_cpugpu.tex}
+	\end{center}
+	\caption{GPU speedup compared to CPU in weak scaling from 1 to 256 nodes for PDGEMM.}
+	\label{fig:scaling3}
+\end{figure}
+\clearpage
+\section{3D Diffusion}
+\begin{figure}[]
+	\begin{center}
+		\input{diffusion-data/diff_strong_scaling.tex}
+	\end{center}
+	\caption{Speedup in strong scaling from 1 to 216 nodes for 3D diffusion.}
+	\label{fig:scaling5}
+\end{figure}
+\begin{figure}[]
+	\begin{center}
+		\input{diffusion-data/diff_weak_scaling.tex}
+	\end{center}
+	\caption{Speedup in weak scaling from 1 to 216 nodes for 3D diffusion.}
+	\label{fig:scaling5}
+\end{figure}

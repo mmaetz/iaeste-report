@@ -1,0 +1,5 @@
+\section{Measurements}
+\subsection{Strong scaling}
+In the strong scaling there are two different types of curves. In the case of $s=60$ and $s=120$ one can see the square root shaped scaling where the problem is memory bound. For greater block sizes the curves are convex in the beginning and become square-root-like for higher number of nodes. Overall $s=60$ scales the worst as it communicates a lot.
+\subsection{Weak scaling}
+In the weak scaling one can see that no MPI communication at all is roughly two times faster than MPI communication. Then the scaling is almost perfect with the best scaling for $s=60$. The worst are $s=300,s=360,s=420$ and have a similar behaviour. Further investigation of those curves would be interesting.
