@@ -1,0 +1,7 @@
+*.aux
+*.pdf
+*.fls
+*.idx
+*.log
+*.out
+*latexmk
